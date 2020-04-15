@@ -3,24 +3,30 @@ pipeline {
        triggers {
         pollSCM "* * * * *"
        }
+    tools {
+        maven 'Maven 3.6.3'
+    }   
     stages {
-        stage('Build Application') { 
+        stage ('Initialize') {
             steps {
-                echo '=== Building Petclinic Application ==='
-                sh 'mvn -B -DskipTests clean package' 
+                sh '''
+                    echo "PATH = ${PATH}"
+                    echo "M2_HOME = ${M2_HOME}"
+                '''
             }
         }
-        stage('Test Application') {
+
+        stage ('Build') {
             steps {
-                echo '=== Testing Petclinic Application ==='
-                sh 'mvn test'
+                sh 'mvn -Dmaven.test.failure.ignore=true install' 
             }
             post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
+                success {
+                    junit 'target/surefire-reports/**/*.xml' 
                 }
             }
         }
+           
         stage('Build Docker Image') {
             when {
                 branch 'master'
