@@ -4,7 +4,7 @@ pipeline {
         pollSCM "* * * * *"
        }
     tools {
-        maven 'Maven ?'
+        maven '?'
     }   
     stages {
         stage ('Initialize') {
