@@ -3,11 +3,17 @@ pipeline {
        triggers {
         pollSCM "* * * * *"
        }
+tools {
+        maven 'M2_HOME'
+        jdk 'jdk8'
+    }   
     stages {
-        stage('Build Application') { 
+        stage ('Initialize') {
             steps {
-                echo '=== Building Petclinic Application ==='
-                sh 'mvn -B -DskipTests clean package' 
+                sh '''
+                    echo "PATH = ${PATH}"
+                    echo "M2_HOME = ${M2_HOME}"
+                '''
             }
         }
         stage('Test Application') {
