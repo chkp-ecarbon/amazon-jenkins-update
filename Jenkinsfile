@@ -3,19 +3,25 @@ pipeline {
        triggers {
         pollSCM "* * * * *"
        }
-    tools {
-        maven 'M2_HOME 3.6.3'
-        jdk 'jdk8'
-    }   
     stages {
-        stage ('Initialize') {
+        stage('Build Application') { 
             steps {
-                sh '''
-                    echo "PATH = ${PATH}"
-                    echo "MAVEN_HOME = ${MAVEN_HOME}"
-                '''
+                echo '=== Building Petclinic Application ==='
+                sh 'mvn -B -DskipTests clean package' 
             }
         }
+        stage('Test Application') {
+            steps {
+                echo '=== Testing Petclinic Application ==='
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
+    
 
         stage ('Build') {
             steps {
